@@ -46,6 +46,8 @@ module RestClient
   #      called with the HTTP request and request params.
   class Request
 
+    @@ssl_store = nil
+
     attr_reader :method, :uri, :url, :headers, :payload, :proxy,
                 :user, :password, :read_timeout, :max_redirects,
                 :open_timeout, :raw_response, :processed_headers, :args,
@@ -494,6 +496,7 @@ module RestClient
     # @return [OpenSSL::X509::Store]
     #
     def self.default_ssl_cert_store
+      return @@ssl_store if @@ssl_store
       cert_store = OpenSSL::X509::Store.new
       cert_store.set_default_paths
 
@@ -509,6 +512,7 @@ module RestClient
           end
         end
       end
+      @@ssl_store = cert_store
 
       cert_store
     end
